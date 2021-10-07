@@ -22,7 +22,8 @@ transition from HIGH to LOW or from LOW to HIGH state).
    1.3. [Interpreting The Data](#interpreting-the-data)  
  2. [Using The Driver](#using-the-driver)  
    2.1. [Loading/Unloading The Driver](#loadingunloading-the-driver)  
-   2.2. [Sysfs Attributes](#sysfs-attributes)  
+   2.2. [Installing The Driver](#installing-the-driver)  
+   2.3. [Sysfs Attributes](#sysfs-attributes)  
  3. [Implementation Details](#implementation-details)  
    3.1. [GPIO API](#gpio-api)  
    3.2. [IRQ API](#irq-api)  
@@ -108,6 +109,20 @@ only has effect if `autoupdate` is `true`.
 The driver can be unloaded by executing (as root): `rmmod dht22_driver`.
 
 The driver can be recompiled using `make`.
+
+### Installing The Driver
+[back to top](#dht22-sensor-driver)
+
+The module can now be also permanently installed and loaded during bootup.
+1. recompile the driver using `make compile`
+2. install the driver using `sudo make install`
+3. add `dht22_driver` to `/etc/modules`
+4. create `/etc/modprobe.d/dht22_driver.conf` file
+5. add `options dht22_driver gpio=<gpio> autoupdate=1` to the file (note the `gpio`
+   parameter must reflect to which pin the sensor is connected
+6. run `sudo update-initramfs -c -k $(uname -r)`
+7. reboot
+8. check if the module has been successfully loaded `lsmod | grep -i dht22`
 
 ### Sysfs Attributes  
 [back to top](#dht22-sensor-driver)
