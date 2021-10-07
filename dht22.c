@@ -2,7 +2,6 @@
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/gpio.h>
-#include <linux/time64.h>
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/slab.h>
@@ -87,7 +86,7 @@ static int __init dht22_init(void)
 	if (ret)
 		goto gpio_err;
 
-	getnstimeofday64(&ts_prev_gpio_switch);
+	ktime_get_real_ts64(&ts_prev_gpio_switch);
 	ret = setup_dht22_irq(gpio);
 	if (ret)
 		goto irq_err;
@@ -234,7 +233,7 @@ static void trigger_sensor(struct work_struct *work)
 	 */
 	sm->triggered = true;
 	sm->change_state(sm);
-	getnstimeofday64(&ts_prev_reading);
+	ktime_get_real_ts64(&ts_prev_reading);
 
 	mdelay(TRIGGER_DELAY);
 
@@ -320,7 +319,7 @@ static irqreturn_t dht22_irq_handler(int irq, void *data)
 		return IRQ_HANDLED;
 	}
 
-	getnstimeofday64(&ts_current_irq);
+	ktime_get_real_ts64(&ts_current_irq);
 	ts_diff = timespec64_sub(ts_current_irq, ts_prev_gpio_switch);
 
 	irq_deltas[processed_irq_count] =
@@ -483,7 +482,7 @@ trigger_store(struct kobject *kobj,
 	bool can_trigger;
 	ktime_t prev, min_interval;
 
-	getnstimeofday64(&now);
+	ktime_get_real_ts64(&now);
 	prev = timespec64_to_ktime(ts_prev_reading);
 
 	min_interval = ktime_set(AUTOUPDATE_TIMEOUT_MIN / MSEC_PER_SEC,
