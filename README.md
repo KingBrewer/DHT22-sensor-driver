@@ -118,8 +118,8 @@ The module can now be also permanently installed and loaded during bootup.
 2. install the driver using `sudo make install`
 3. add `dht22_driver` to `/etc/modules`
 4. create `/etc/modprobe.d/dht22_driver.conf` file
-5. add `options dht22_driver gpio=<gpio> autoupdate=1` to the file (note the `gpio`
-   parameter must reflect to which pin the sensor is connected
+5. add `options dht22_driver gpio=<gpio> autoupdate=1 autoupdate_timeout=<milliseconds>`
+   to the file (note the `gpio` parameter must reflect to which pin the sensor is connected
 6. run `sudo update-initramfs -c -k $(uname -r)`
 7. reboot
 8. check if the module has been successfully loaded `lsmod | grep -i dht22`
